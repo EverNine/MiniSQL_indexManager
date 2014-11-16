@@ -31,23 +31,23 @@
 
 #IndexManager类说明
 ##类定义
-class IndexManager{
-    private:
-        std::vector<bTree> buffer;
-        int bufferMax;
-        bufferManager* bfm;
+    class IndexManager{
+        private:
+            std::vector<bTree> buffer;
+            int bufferMax;
+            bufferManager* bfm;
 
-        bTree& findTree(string indexName);
-    public:
-        IndexManager(bufferManager& bm);
-        IndexManager(bufferManager& bm, int max);
-        void setBufferSize(int max);
-        std::vector<unsigned int> find(string indexName,index ind);
-        void insert(string indexName,index ind);
-        void del(string indexName,index ind);
-        void create(string indexName,indexType it,int length);
-        void drop(string indexName);
-};
+            bTree& findTree(string indexName);
+        public:
+            IndexManager(bufferManager& bm);
+            IndexManager(bufferManager& bm, int max);
+            void setBufferSize(int max);
+            std::vector<unsigned int> find(string indexName,index ind);
+            void insert(string indexName,index ind);
+            void del(string indexName,index ind);
+            void create(string indexName,indexType it,int length);
+            void drop(string indexName);
+    };
 
 
 ##成员函数
