@@ -26,7 +26,7 @@
 ###init(int/string/float val);
 初始化函数,当已经使用上面的构造函数传入索引值时不需要调用此方法
 ###setTuple(unsigned int t);
-设置元祖位置，t为该元祖在表中的位置，当更新索引时必须使用此方法确定唯一索引。
+设置元组位置，t为该元组在表中的位置，当更新索引时必须使用此方法确定唯一索引。
 
 
 #IndexManager类说明
@@ -60,9 +60,9 @@
 ###std::vector<unsigned int\> find(string indexName,index ind);
 利用索引文件查找，indexName为索引名，ind为查找的索引。
 ###void insert(string indexName,index ind);
-插入新的元祖时调用此方法更新索引，此处的ind必须使用setTuple方法设定其元祖位置。
+插入新的元组时调用此方法更新索引，此处的ind必须使用setTuple方法设定其元组位置。
 ###void del(string indexName,index ind);
-删除元祖时调用此方法更新索引，此处的ind必须使用setTuple方法设定其元祖位置。
+删除元组时调用此方法更新索引，此处的ind必须使用setTuple方法设定其元组位置。
 ###void create(string indexName,indexType it,int length);
 创建新的索引,it为索引类型，length为长度(仅在索引类型为char时有效)
 ###void drop(string indexName);
