@@ -18,6 +18,8 @@ class IndexManager{
         void del(string indexName,index ind);
         void create(string indexName,indexType it,int length);
         void drop(string indexName);
+        std::vector<unsigned int> findLess(string indexName,index ind,bool equal);
+        std::vector<unsigned int> findGreater(string indexName,index ind,bool equal);
 };
 
 #endif

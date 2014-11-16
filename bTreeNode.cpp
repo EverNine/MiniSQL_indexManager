@@ -33,8 +33,8 @@ bTreeNode::bTreeNode(indexType it, unsigned int len, nodeType tp, BYTE* bPtr){
 }
 
 bTreeNode::~bTreeNode(){
-    //ptrList.clear();
-    //indexList.clear();
+    ptrList.clear();
+    indexList.clear();
 }
 
 void bTreeNode::init(){

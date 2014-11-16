@@ -23,6 +23,8 @@ class bTree
         string getName();
         bTreeNode findFirstNode(index ind);
         std::vector<unsigned int> findAll(index ind);
+        std::vector<unsigned int> findGreater(index ind, bool equal);
+        std::vector<unsigned int> findLess(index ind, bool equal);
         bTreeNode assignNode(unsigned int blockNo);
         bTreeNode createNode(nodeType nt);
         void freeNode(bTreeNode& node);

@@ -23,6 +23,16 @@ std::vector<unsigned int> IndexManager::find(string indexName,index ind){
     return t.findAll(ind);
 }
 
+std::vector<unsigned int> IndexManager::findGreater(string indexName,index ind,bool equal){
+    bTree t = findTree(indexName);
+    return t.findGreater(ind,equal);
+}
+
+std::vector<unsigned int> IndexManager::findLess(string indexName,index ind,bool equal){
+    bTree t = findTree(indexName);
+    return t.findLess(ind,equal);
+}
+
 void IndexManager::insert(string indexName,index ind){
     bTree t = findTree(indexName);
     t.insertIndex(ind);

@@ -631,14 +631,96 @@ void bTree::bfs(bTreeNode& b,std::vector<bTreeNode>& t){
 
 //test
 bTree::~bTree(){
-    int i;
-    for (i = 0; i < blocks.size(); ++i)
-    {
-        delete[] blocks[i];
-        blocks.clear();
-    }
+    //int i;
+    //for (i = 0; i < blocks.size(); ++i)
+    //{
+        //delete[] blocks[i];
+        //blocks.clear();
+    //}
 }
 
 string bTree::getName(){
     return indexName;
+}
+
+std::vector<unsigned int> bTree::findLess(index ind, bool equal){
+    unsigned int i;
+    std::vector<unsigned int> res;
+    bTreeNode cur = assignNode(root);
+    while(cur.type != LEAF)
+    {
+        freeNode(cur);
+        cur = assignNode(cur.ptrList.front());
+    }
+
+    if(i>=cur.valNum)
+    {
+        freeNode(cur);
+        return res;
+    }
+    i=0;
+    while(cur.indexList[i]!=ind)
+    {
+        res.push_back(cur.ptrList[i++]);
+        if(i==cur.valNum)
+        {
+            if(cur.ptrList[i]==0)
+                break;
+            freeNode(cur);
+            cur = assignNode(cur.ptrList[i]);
+            i = 0;
+        }
+    }
+    if(equal)
+    while(cur.indexList[i]==ind)
+    {
+        res.push_back(cur.ptrList[i++]);
+        if(i==cur.valNum)
+        {
+            if(cur.ptrList[i]==0)
+                break;
+            freeNode(cur);
+            cur = assignNode(cur.ptrList[i]);
+            i = 0;
+        }
+    }
+    freeNode(cur);
+    return res;
+}
+
+std::vector<unsigned int> bTree::findGreater(index ind, bool equal){
+    unsigned int i;
+    std::vector<unsigned int> res;
+    if(!equal)
+        ind.setTuple(-1);
+    bTreeNode cur = findFirstNode(ind);
+
+    for (i = 0; i < cur.valNum; ++i)
+    {
+       if(cur.indexList[i]==ind) 
+           break;
+    }
+    if(i>=cur.valNum)
+    {
+        freeNode(cur);
+        if(cur.ptrList.back()==0)
+            return res;
+        cur = assignNode(cur.ptrList.back());
+        i = 0;
+    }
+    while(true)
+    {
+        if(equal || cur.indexList[i]!=ind)
+            res.push_back(cur.ptrList[i++]);
+        if(i==cur.valNum)
+        {
+            if(cur.ptrList[i]==0)
+                break;
+            freeNode(cur);
+            cur = assignNode(cur.ptrList[i]);
+            i = 0;
+        }
+    }
+    freeNode(cur);
+    return res;
 }
