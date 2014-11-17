@@ -48,7 +48,7 @@ void bTreeNode::init(){
     cur+=sizeof(unsigned int);
     for (i = 0; i < valNum; ++i)
     {
-        index ind;
+        Index ind;
         unsigned int l = *(unsigned int*)cur;
         cur+=sizeof(unsigned int);
         ptrList.push_back(l);

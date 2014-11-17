@@ -4,25 +4,25 @@
 
 class IndexManager{
     private:
-        std::vector<bTree> buffer;
+        std::vector<bTree> bTreeBuffer;
         int bufferMax;
-        bufferManager* bfm;
+        buffer* bfm;
         indexType type;
         int charLength;
 
         bTree& findTree(string indexName);
     public:
-        IndexManager(bufferManager& bm);
-        IndexManager(bufferManager& bm, int max);
+        IndexManager(buffer& bm);
+        IndexManager(buffer& bm, int max);
         void setIndex(indexType it, int length);
         void setBufferSize(int max);
-        std::vector<unsigned int> find(string indexName,index ind);
-        void insert(string indexName,index ind);
-        void del(string indexName,index ind);
+        std::vector<unsigned int> find(string indexName,Index ind);
+        void insert(string indexName,Index ind);
+        void del(string indexName,Index ind);
         void create(string indexName,indexType it,int length);
         void drop(string indexName);
-        std::vector<unsigned int> findLess(string indexName,index ind,bool equal);
-        std::vector<unsigned int> findGreater(string indexName,index ind,bool equal);
+        std::vector<unsigned int> findLess(string indexName,Index ind,bool equal);
+        std::vector<unsigned int> findGreater(string indexName,Index ind,bool equal);
 };
 
 #endif

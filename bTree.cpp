@@ -1,6 +1,6 @@
 #include "bTree.h"
 
-bTree::bTree(string name, bufferManager* bfm, indexType it, int length){
+bTree::bTree(string name, buffer* bfm, indexType it, int length){
     indexName = name;
     bm = bfm;
     indtype = it;
@@ -88,11 +88,12 @@ bTree::bTree(string name, bufferManager* bfm, indexType it, int length){
 
 }
 
-bTree::bTree(string name, indexType t, int length, bufferManager* bfm){
+bTree::bTree(string name, indexType t, int length, buffer* bfm){
     bm = bfm;
     indexName = name;
     indtype = t;
     charLength = length;
+    bm->createNewFile(indexName);
     bTreeNode r = createNode(ROOT);
     bTreeNode l = createNode(LEAF);
     r.ptrList.push_back(l.blockNo);
@@ -101,7 +102,7 @@ bTree::bTree(string name, indexType t, int length, bufferManager* bfm){
     freeNode(l);
 }
 
-bTreeNode bTree::findFirstNode(index ind){
+bTreeNode bTree::findFirstNode(Index ind){
 
     bTreeNode cur = assignNode(root);
     bTreeNode par = cur;
@@ -127,7 +128,7 @@ bTreeNode bTree::findFirstNode(index ind){
     return cur;
 }
 
-std::vector<unsigned int> bTree::findAll(index ind){
+std::vector<unsigned int> bTree::findAll(Index ind){
     unsigned int i;
     std::vector<unsigned int> res;
     bTreeNode cur = findFirstNode(ind);
@@ -194,7 +195,7 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
             break;
         default:
             std::cout<<"bTree：在"<<indexName<<"中第"<<blockNo-1<<"块block数据有误"<<std::endl;
-            return;
+            break;
     }
 
     bTreeNode temp(indtype,charLength,nt,ptr);
@@ -205,13 +206,15 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
 
 void bTree::freeNode(bTreeNode& node){
     node.writeBack();
-    bm->freeBlock(node.blockNo, node.dirty);
+    int r = bm->freeBlock(indexName,node.blockNo-1,node.dirty);
+    if(!r)
+        std::cout<<"bTree：在释放"<<indexName<<"中第"<<node.blockNo-1<<"块时失败"<<std::endl;
 
     //unlock buffer
     return;
 }
 
-void bTree::insertIndex(index ind){
+void bTree::insertIndex(Index ind){
     unsigned int i;
     bTreeNode cur = findFirstNode(ind);
 
@@ -269,7 +272,7 @@ bTreeNode bTree::createNode(nodeType nt){
         //blocks.push_back(ptr);
         //test
 
-        ptr = bm->getBlockAddress(emptyBlock.back()-1);
+        ptr = bm->getBlockAddress(indexName,emptyBlock.back()-1);
         blockNo = emptyBlock.back();
         if(ptr == NULL)
             std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<emptyBlock.back()-1<<"块block"<<std::endl;
@@ -288,7 +291,7 @@ bTreeNode bTree::createNode(nodeType nt){
         //test
         
         int n = bm->addNewBlock(indexName);
-        ptr = bm->getBlockAddress(n);
+        ptr = bm->getBlockAddress(indexName,n);
         blockNo = n + 1;
         if(ptr == NULL)
             std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<emptyBlock.back()-1<<"块block"<<std::endl;
@@ -299,7 +302,7 @@ bTreeNode bTree::createNode(nodeType nt){
     return temp;
 }
 
-void bTree::insertNode(unsigned int parent, unsigned int child, unsigned int pos, index ind){
+void bTree::insertNode(unsigned int parent, unsigned int child, unsigned int pos, Index ind){
     findPath.pop_back();
     bTreeNode cur = assignNode(parent);
     cur.dirty = true;
@@ -309,7 +312,7 @@ void bTree::insertNode(unsigned int parent, unsigned int child, unsigned int pos
         cur.indexList.push_back(ind);
     cur.valNum++;
     cur.ptrList.insert(cur.ptrList.begin()+pos+1,child);
-    index minInd;
+    Index minInd;
     if (cur.isFull())
     {
         unsigned int i;
@@ -362,8 +365,8 @@ void bTree::insertNode(unsigned int parent, unsigned int child, unsigned int pos
     return;
 }
 
-index bTree::findMinIndex(bTreeNode& node){
-    index res;
+Index bTree::findMinIndex(bTreeNode& node){
+    Index res;
     if(node.type==LEAF)
         res=node.indexList.front();
     else
@@ -375,7 +378,7 @@ index bTree::findMinIndex(bTreeNode& node){
     return res;
 }
 
-void bTree::deleteIndex(index ind){
+void bTree::deleteIndex(Index ind){
     unsigned int i;
     bTreeNode cur = findFirstNode(ind);
 
@@ -498,7 +501,7 @@ void bTree::deleteNode(unsigned int parent, unsigned int path){
     bTreeNode cur = assignNode(parent);
 
     cur.dirty = true;
-    index backupInd;
+    Index backupInd;
     backupInd = cur.indexList.front();
     if (path > 0)
         cur.indexList.erase(cur.indexList.begin()+path-1);
@@ -679,7 +682,7 @@ string bTree::getName(){
     return indexName;
 }
 
-std::vector<unsigned int> bTree::findLess(index ind, bool equal){
+std::vector<unsigned int> bTree::findLess(Index ind, bool equal){
     unsigned int i;
     std::vector<unsigned int> res;
     bTreeNode cur = assignNode(root);
@@ -724,7 +727,7 @@ std::vector<unsigned int> bTree::findLess(index ind, bool equal){
     return res;
 }
 
-std::vector<unsigned int> bTree::findGreater(index ind, bool equal){
+std::vector<unsigned int> bTree::findGreater(Index ind, bool equal){
     unsigned int i;
     std::vector<unsigned int> res;
     if(!equal)

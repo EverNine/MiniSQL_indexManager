@@ -5,7 +5,7 @@
 using std::string;
 enum indexType {NONE,INT,FLOAT,STRING};
 
-class index{
+class Index{
     private:
         indexType type;
         int intVal;
@@ -13,24 +13,24 @@ class index{
         string stringVal;
         unsigned int tupleNo;
     public:
-        index(){
+        Index(){
             tupleNo=0;
             type=NONE;
         };
         void setTuple(unsigned int t){
             tupleNo = t;
         }
-        index(int val){
+        Index(int val){
             type=INT;
             intVal=val;
             tupleNo=0;
         };
-        index(float val){
+        Index(float val){
             type=FLOAT;
             floatVal=val;
             tupleNo=0;
         };
-        index(string val){
+        Index(string val){
             type=STRING;
             stringVal=val;
             tupleNo=0;
@@ -62,7 +62,7 @@ class index{
         unsigned int getTuple(){
             return tupleNo;
         }
-        const bool operator==(const index& obj){
+        const bool operator==(const Index& obj){
             switch(type)
             {
                 case INT:
@@ -71,9 +71,11 @@ class index{
                     return floatVal==obj.floatVal;
                 case STRING:
                     return stringVal==obj.stringVal;
+                default:
+                    return false;
             }
         };
-        const bool operator<(const index& obj){
+        const bool operator<(const Index& obj){
             switch(type)
             {
                 case INT:
@@ -88,9 +90,11 @@ class index{
                     if(stringVal==obj.stringVal)
                         return tupleNo<obj.tupleNo;
                     return stringVal<obj.stringVal;
+                default:
+                    return false;
             }
         };
-        const bool operator<=(const index& obj){
+        const bool operator<=(const Index& obj){
             
             switch(type)
             {
@@ -106,9 +110,11 @@ class index{
                     if(stringVal==obj.stringVal)
                         return tupleNo<=obj.tupleNo;
                     return stringVal<=obj.stringVal;
+                default:
+                    return false;
             }
         };
-        const bool operator>(const index& obj){
+        const bool operator>(const Index& obj){
             
             switch(type)
             {
@@ -124,9 +130,11 @@ class index{
                     if(stringVal==obj.stringVal)
                         return tupleNo>obj.tupleNo;
                     return stringVal>obj.stringVal;
+                default:
+                    return false;
             }
         };
-        const bool operator>=(const index& obj){
+        const bool operator>=(const Index& obj){
             switch(type)
             {
                 case INT:
@@ -141,9 +149,11 @@ class index{
                     if(stringVal==obj.stringVal)
                         return tupleNo>=obj.tupleNo;
                     return stringVal>=obj.stringVal;
+                default:
+                    return false;
             }
         };
-        const bool operator!=(const index& obj){
+        const bool operator!=(const Index& obj){
             switch(type)
             {
                 case INT:
@@ -152,6 +162,8 @@ class index{
                     return floatVal!=obj.floatVal;
                 case STRING:
                     return stringVal!=obj.stringVal;
+                default:
+                    return false;
             }
         };
 };
