@@ -9,10 +9,17 @@ bTree::bTree(string name, buffer* bfm, indexType it, int length){
 
     int n = bm->getNumberOfBlocks(name);
     int i;
+    //std::cout<<"number:"<<n<<std::endl;
     for (i = 1; i <= n; ++i)
     {
         BYTE* ptr = bm->getBlockAddress(name, i-1);
+        if (ptr == NULL)
+        {
+            std::cout<<"bTree：读取"<<indexName<<"的第"<<i-1<<"块时失败"<<std::endl;
+        }
+        //std::cout<<"address:"<<ptr<<std::endl;
         char c = *ptr;
+        //std::cout<<"char:"<<c<<std::endl;
         if(c=='E')
             emptyBlock.push_back(i);
         if(c=='R')
@@ -98,6 +105,8 @@ bTree::bTree(string name, indexType t, int length, buffer* bfm){
     bTreeNode l = createNode(LEAF);
     r.ptrList.push_back(l.blockNo);
     l.ptrList.push_back(0);
+    root = r.blockNo;
+    l.parentPtr = root;
     freeNode(r);
     freeNode(l);
 }
@@ -294,7 +303,7 @@ bTreeNode bTree::createNode(nodeType nt){
         ptr = bm->getBlockAddress(indexName,n);
         blockNo = n + 1;
         if(ptr == NULL)
-            std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<emptyBlock.back()-1<<"块block"<<std::endl;
+            std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<blockNo-1<<"块block"<<std::endl;
     }
     bTreeNode temp(indtype,charLength,nt,ptr);
     temp.blockNo = blockNo;
@@ -730,13 +739,11 @@ std::vector<unsigned int> bTree::findLess(Index ind, bool equal){
 std::vector<unsigned int> bTree::findGreater(Index ind, bool equal){
     unsigned int i;
     std::vector<unsigned int> res;
-    if(!equal)
-        ind.setTuple(-1);
     bTreeNode cur = findFirstNode(ind);
 
     for (i = 0; i < cur.valNum; ++i)
     {
-       if(cur.indexList[i]==ind) 
+       if(cur.indexList[i]>=ind) 
            break;
     }
     if(i>=cur.valNum)
@@ -750,8 +757,9 @@ std::vector<unsigned int> bTree::findGreater(Index ind, bool equal){
     while(true)
     {
         if(equal || cur.indexList[i]!=ind)
-            res.push_back(cur.ptrList[i++]);
-        if(i==cur.valNum)
+            res.push_back(cur.ptrList[i]);
+        i++;
+        if(i>=cur.valNum)
         {
             if(cur.ptrList[i]==0)
                 break;
