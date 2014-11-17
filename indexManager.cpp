@@ -65,3 +65,8 @@ bTree& IndexManager::findTree(string indexName){
         buffer.erase(buffer.begin());
     return buffer.back();
 }
+
+void IndexManager::setIndex(indexType it, int length){
+    type = it;
+    charLength = length;
+}

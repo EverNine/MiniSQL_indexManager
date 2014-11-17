@@ -17,7 +17,7 @@ class bTree
         //std::vector<BYTE*> blocks;
         //test
     public:
-        bTree(string name, bufferManager* bfm);
+        bTree(string name, bufferManager* bfm, indexType it, int length);
         bTree(string name, indexType t, int length, bufferManager* bfm);
         ~bTree();
         string getName();

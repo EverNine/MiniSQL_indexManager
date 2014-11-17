@@ -1,9 +1,25 @@
 #include "bTree.h"
 
-bTree::bTree(string name, bufferManager* bfm){
+bTree::bTree(string name, bufferManager* bfm, indexType it, int length){
     indexName = name;
     bm = bfm;
+    indtype = it;
+    charLength = length;
+    root = 0;
 
+    int n = bm->getNumberOfBlocks(name);
+    int i;
+    for (i = 1; i <= n; ++i)
+    {
+        BYTE* ptr = bm->getBlockAddress(name, i-1);
+        char c = *ptr;
+        if(c=='E')
+            emptyBlock.push_back(i);
+        if(c=='R')
+            root = i;
+    }
+    if(root == 0)
+        std::cout<<"bTree：初始化时无法找到根节点"<<std::endl;
     //test
     //root=1;
     //indtype=INT;
@@ -151,6 +167,11 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
     BYTE* ptr;
 
     //get pointer from buffer
+    ptr = bm->getBlockAddress(indexName, blockNo-1);
+    if(ptr == NULL)
+    {
+        std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<blockNo-1<<"块block"<<std::endl;
+    }
 
     //test
     //ptr = blocks[blockNo-1];
@@ -171,6 +192,9 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
         case 'I':
             nt = INNODE;
             break;
+        default:
+            std::cout<<"bTree：在"<<indexName<<"中第"<<blockNo-1<<"块block数据有误"<<std::endl;
+            return;
     }
 
     bTreeNode temp(indtype,charLength,nt,ptr);
@@ -181,6 +205,7 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
 
 void bTree::freeNode(bTreeNode& node){
     node.writeBack();
+    bm->freeBlock(node.blockNo, node.dirty);
 
     //unlock buffer
     return;
@@ -244,6 +269,11 @@ bTreeNode bTree::createNode(nodeType nt){
         //blocks.push_back(ptr);
         //test
 
+        ptr = bm->getBlockAddress(emptyBlock.back()-1);
+        blockNo = emptyBlock.back();
+        if(ptr == NULL)
+            std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<emptyBlock.back()-1<<"块block"<<std::endl;
+
         emptyBlock.pop_back();
 
     }
@@ -256,6 +286,12 @@ bTreeNode bTree::createNode(nodeType nt){
         //blockNo = ++blockCount;
         //blocks.push_back(ptr);
         //test
+        
+        int n = bm->addNewBlock(indexName);
+        ptr = bm->getBlockAddress(n);
+        blockNo = n + 1;
+        if(ptr == NULL)
+            std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<emptyBlock.back()-1<<"块block"<<std::endl;
     }
     bTreeNode temp(indtype,charLength,nt,ptr);
     temp.blockNo = blockNo;

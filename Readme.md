@@ -49,6 +49,7 @@
             void drop(string indexName);
             std::vector<unsigned int> findLess(string indexName,index ind,bool equal);
             std::vector<unsigned int> findGreater(string indexName,index ind,bool equal);
+            void setIndex(indexType it, int length);
     };
 
 
@@ -73,3 +74,5 @@
 创建新的索引,it为索引类型，length为长度(仅在索引类型为char时有效)
 ###void drop(string indexName);
 删除索引文件
+###void IndexManager::setIndex(indexType it, int length){
+设置索引类型，在每次进行查找、插入、删除操作前必须调用此函数确定索引类型，length仅在类型为STRING时有效。

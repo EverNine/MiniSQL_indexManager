@@ -7,11 +7,14 @@ class IndexManager{
         std::vector<bTree> buffer;
         int bufferMax;
         bufferManager* bfm;
+        indexType type;
+        int charLength;
 
         bTree& findTree(string indexName);
     public:
         IndexManager(bufferManager& bm);
         IndexManager(bufferManager& bm, int max);
+        void setIndex(indexType it, int length);
         void setBufferSize(int max);
         std::vector<unsigned int> find(string indexName,index ind);
         void insert(string indexName,index ind);
