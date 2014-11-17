@@ -50,11 +50,12 @@ void IndexManager::create(string indexName, indexType it, int length){
 }
 
 void IndexManager::drop(string indexName){
+    bfm->deleteFile(indexName);
 }
 
 bTree& IndexManager::findTree(string indexName){
     std::vector<bTree>::iterator iter;
-    for (iter = bTreeBuffer.begin(); iter < bTreeBuffer.begin(); ++iter)
+    for (iter = bTreeBuffer.begin(); iter < bTreeBuffer.end(); ++iter)
     {
         if(iter->getName()==indexName)
             return *iter;
@@ -68,4 +69,9 @@ bTree& IndexManager::findTree(string indexName){
 void IndexManager::setIndex(indexType it, int length){
     type = it;
     charLength = length;
+}
+
+void IndexManager::print(string name){
+    bTree t = findTree(name);
+    t.printTree();
 }

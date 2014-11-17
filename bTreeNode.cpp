@@ -163,7 +163,7 @@ void bTreeNode::testOutput(){
     unsigned int i;
     for (i = 0; i < valNum; ++i)
     {
-        std::cout<<ptrList[i]<<' ';
+        std::cout<<"["<<ptrList[i]<<"] ";
         switch (indtype)
         {
             case INT:
@@ -176,10 +176,11 @@ void bTreeNode::testOutput(){
                 std::cout<<indexList[i].getString()<<' ';
                 break;
             default:
+                std::cout<<"error";
                 break;
         }
     }
-    std::cout<<ptrList.back();
+    std::cout<<"["<<ptrList.back()<<"]";
 }
 
 bool bTreeNode::isFull(){

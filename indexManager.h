@@ -23,6 +23,7 @@ class IndexManager{
         void drop(string indexName);
         std::vector<unsigned int> findLess(string indexName,Index ind,bool equal);
         std::vector<unsigned int> findGreater(string indexName,Index ind,bool equal);
+        void print(string name);
 };
 
 #endif

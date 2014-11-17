@@ -237,12 +237,20 @@ void bTree::insertIndex(Index ind){
         //cur.indexList.push_back(ind);
     //else
         //cur.indexList.insert(cur.indexList.begin()+i,ind);
+
+    //std::cout<<"num:"<<cur.valNum<<std::endl;
+
     if (cur.valNum>0)
         cur.indexList.insert(cur.indexList.begin()+i,ind);
     else
         cur.indexList.push_back(ind);
     cur.valNum++;
     cur.ptrList.insert(cur.ptrList.begin()+i,ind.getTuple());
+    
+    //std::cout<<ind.getInt()<<std::endl;
+    //cur.testOutput();
+    //std::cout<<std::endl;
+
     if (cur.isFull())
     {
         bTreeNode newNode = createNode(LEAF);
@@ -636,12 +644,13 @@ void bTree::cleanNode(bTreeNode& node){
 
 void bTree::printTree(){
     bTreeNode r = assignNode(root);
-    std::cout<<r.type<<std::endl;
+    //std::cout<<r.type<<std::endl;
     std::vector<bTreeNode> temp;
     bfs(r,temp);
     std::vector<bTreeNode>::iterator iter;
     for (iter = temp.begin(); iter < temp.end(); ++iter)
     {
+        std::cout<<iter->blockNo<<":";
         iter->testOutput();
         std::cout<<std::endl;
     }
@@ -701,16 +710,18 @@ std::vector<unsigned int> bTree::findLess(Index ind, bool equal){
         cur = assignNode(cur.ptrList.front());
     }
 
+    i=0;
     if(i>=cur.valNum)
     {
         freeNode(cur);
         return res;
     }
-    i=0;
     while(cur.indexList[i]!=ind)
     {
-        res.push_back(cur.ptrList[i++]);
-        if(i==cur.valNum)
+        if(equal || cur.indexList[i]!=ind)
+            res.push_back(cur.ptrList[i]);
+        i++;
+        if(i>=cur.valNum)
         {
             if(cur.ptrList[i]==0)
                 break;
@@ -723,7 +734,7 @@ std::vector<unsigned int> bTree::findLess(Index ind, bool equal){
     while(cur.indexList[i]==ind)
     {
         res.push_back(cur.ptrList[i++]);
-        if(i==cur.valNum)
+        if(i>=cur.valNum)
         {
             if(cur.ptrList[i]==0)
                 break;
