@@ -12,7 +12,7 @@ bTree::bTree(string name, buffer* bfm, indexType it, int length){
     //std::cout<<"number:"<<n<<std::endl;
     for (i = 1; i <= n; ++i)
     {
-        BYTE* ptr = bm->getBlockAddress(name, i-1);
+        BYTE* ptr = bm->getoffsetBlockAddress(name, i-1);
         if (ptr == NULL)
         {
             std::cout<<"bTree：读取"<<indexName<<"的第"<<i-1<<"块时失败"<<std::endl;
@@ -177,7 +177,7 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
     BYTE* ptr;
 
     //get pointer from buffer
-    ptr = bm->getBlockAddress(indexName, blockNo-1);
+    ptr = bm->getoffsetBlockAddress(indexName, blockNo-1);
     if(ptr == NULL)
     {
         std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<blockNo-1<<"块block"<<std::endl;
@@ -215,7 +215,8 @@ bTreeNode bTree::assignNode(unsigned int blockNo){
 
 void bTree::freeNode(bTreeNode& node){
     node.writeBack();
-    int r = bm->freeBlock(indexName,node.blockNo-1,node.dirty);
+    //int r = bm->freeBlock(indexName,node.blockNo-1,node.dirty);
+    int r = bm->freeBlock_static(indexName,node.blockNo-1,node.dirty);
     if(!r)
         std::cout<<"bTree：在释放"<<indexName<<"中第"<<node.blockNo-1<<"块时失败"<<std::endl;
 
@@ -289,7 +290,7 @@ bTreeNode bTree::createNode(nodeType nt){
         //blocks.push_back(ptr);
         //test
 
-        ptr = bm->getBlockAddress(indexName,emptyBlock.back()-1);
+        ptr = bm->getoffsetBlockAddress(indexName,emptyBlock.back()-1);
         blockNo = emptyBlock.back();
         if(ptr == NULL)
             std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<emptyBlock.back()-1<<"块block"<<std::endl;
@@ -308,7 +309,11 @@ bTreeNode bTree::createNode(nodeType nt){
         //test
         
         int n = bm->addNewBlock(indexName);
-        ptr = bm->getBlockAddress(indexName,n);
+
+
+        n = bm->block[n].offset;
+
+        ptr = bm->getoffsetBlockAddress(indexName,n);
         blockNo = n + 1;
         if(ptr == NULL)
             std::cout<<"bTree：在"<<indexName<<"中无法找到第"<<blockNo-1<<"块block"<<std::endl;
